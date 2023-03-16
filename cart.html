@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart Page</title>
+</head>
+<body>
+    <div id="total">
+        Your Total cart Price is:- <span id="cart-total">0</span>
+    </div>
+    <div id="carts"></div>
+    
+</body>
+</html>
+<script>
+    // store the data in localstorage 
+    let arrData = JSON.parse(localStorage.getItem("cart")) || [];
+    // console.log(arrData);
+
+    let total=arrData.reduce((sum, el, index, arr)=>{
+        return sum + Number(el.price)
+
+    },0)
+    console.log(total);
+
+    document.getElementById("cart-total").innerText=total;
+
+    let contains=document.getElementById("carts");
+    contains.innerHTML = null;
+
+    arrData.map((el,index)=>{
+        let box=document.createElement("div");
+
+        let image=document.createElement("img");
+        image.src=el.images;
+        image.style.width="200px"
+
+        let name=document.createElement("p");
+        name.innerText=el.name;
+
+        let price=document.createElement("p");
+        price.innerText=el.price;
+
+        let rembtn=document.createElement("button");
+        rembtn.innerText="Remove";
+        rembtn.addEventListener("click",function(){
+            Removebutton(el,index)
+        })
+
+        box.append(image,name,price,rembtn);
+        contains.append(box);
+
+    })
+
+     // remove from cart
+
+    function Removebutton(el,index){
+        console.log(el,index);
+        arrData.splice(index,1);
+        alert("Product is Removed from the Cart");
+        console.log(arrData);
+        localStorage.setItem("cart",JSON.stringify(arrData));
+        window.location.reload();
+
+        
+    }
+</script>

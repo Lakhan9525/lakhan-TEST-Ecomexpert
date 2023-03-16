@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>E-comm</title>
+  </head>
+  <body>
+    <!-- select tag for handbags -->
+    <label for="">handbags</label>
+    <select id="handbags">
+      <option value="">---</option>
+      <option value="black.jpeg">Black</option>
+      <option value="red.jpg">Red</option>
+      <option value="tan.jpeg">Tan</option>
+    </select>
+
+    <!-- size of images -->
+
+    <label for="variantSelect">Filter by size:</label>
+    <select id="variantSelect">
+        <option value="">Unselected</option>
+        <option value="Small">Small</option>
+        <option value="Medium">Medium</option>
+        <option value="Large">Large</option>
+      </select>
+    <div id="product-images"></div>
+  </body>
+</html>
+<script>
+  // Define the product object with name, variants, images, and prices
+
+  const variants = [
+    {
+      name: "Black Handbag",
+      price: 20,
+      images: "black.jpeg",
+    },
+    {
+      name: "Red Handbag",
+      price: 9.99,
+      images: "red.jpg",
+    },
+    {
+      name: "Tan Handbag",
+      price: 1115.01,
+      images: "tan.jpeg",
+    },
+  ];
+
+  let filters = document.getElementById("handbags");
+
+  function getData(variants) {
+    variants.map((el, index) => {
+      let contains = document.getElementById("product-images");
+      contains.innerHTML = "";
+
+      let box = document.createElement("div");
+
+      let image = document.createElement("img");
+      image.src = el.images;
+      image.style.width = "200px";
+
+      let name = document.createElement("p");
+      name.innerText = el.name;
+
+      let price = document.createElement("p");
+      price.innerText = el.price;
+
+      let addbtn = document.createElement("button");
+      addbtn.innerText = "Add to Cart";
+      addbtn.addEventListener("click", function () {
+        Addbutton(el);
+      });
+
+      box.append(image, name, price, addbtn);
+      contains.append(box);
+    });
+  }
+//   getData(variants);
+
+  // add to cart
+
+  let arr = JSON.parse(localStorage.getItem("cart")) || [];
+
+  function Addbutton(el) {
+    arr.push(el);
+    console.log(el);
+    localStorage.setItem("cart", JSON.stringify(arr));
+    alert("Product is added to Cart");
+    window.location.href = "cart.html";
+  }
+  // onchange size
+  const variantSelect = document.getElementById("variantSelect");
+
+// Check if there is a selected variant in local storage
+const selectedVariant = localStorage.getItem("selectedVariant");
+if (selectedVariant) {
+  variantSelect.value = selectedVariant;
+}
+
+variantSelect.addEventListener("change", (event) => {
+  const selectedVariant = event.target.value;
+
+  // Store the selected variant in local storage
+  if (selectedVariant) {
+    localStorage.setItem("selectedVariant", selectedVariant);
+  } else {
+    localStorage.removeItem("selectedVariant");
+  }
+});
+
+window.addEventListener("beforeunload", () => {
+    variantSelect.value = "";
+    localStorage.removeItem("selectedVariant");
+  });
+
+  //    onchange images of handbag
+
+  function filterhandbag() {
+    let selectvalue = filters.value;
+
+    if(selectvalue ==="")
+    {
+        getData(variants)
+    }
+
+    const filterdata = variants.filter(
+      (el) => el.images === selectvalue
+    );
+    getData(filterdata);
+  }
+
+  filters.addEventListener("change", filterhandbag);
+  getData(variants);
+</script>
